@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>OSM DRAFT 2026 - Subasta</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    color: gold;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    width: 250px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: gold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+input {
+    padding: 5px;
+    width: 80%;
+    margin-top: 5px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>🏆 OSM DRAFT 2026 - SUBASTA</h1>
+
+<div class="container">
+
+<div class="card">
+<h2>Manager 1</h2>
+<p>Oferta actual: <span id="price1">0</span>M</p>
+<p>Ganador: <span id="winner1">---</span></p>
+<input type="text" id="name1" placeholder="Tu nombre">
+<input type="number" id="bid1" placeholder="Oferta en millones">
+<button onclick="bid(1)">Pujar</button>
+</div>
+
+<div class="card">
+<h2>Manager 2</h2>
+<p>Oferta actual: <span id="price2">0</span>M</p>
+<p>Ganador: <span id="winner2">---</span></p>
+<input type="text" id="name2" placeholder="Tu nombre">
+<input type="number" id="bid2" placeholder="Oferta en millones">
+<button onclick="bid(2)">Pujar</button>
+</div>
+
+<div class="card">
+<h2>Manager 3</h2>
+<p>Oferta actual: <span id="price3">0</span>M</p>
+<p>Ganador: <span id="winner3">---</span></p>
+<input type="text" id="name3" placeholder="Tu nombre">
+<input type="number" id="bid3" placeholder="Oferta en millones">
+<button onclick="bid(3)">Pujar</button>
+</div>
+
+</div>
+
+<script>
+function bid(id) {
+    let price = document.getElementById("price"+id);
+    let winner = document.getElementById("winner"+id);
+    let name = document.getElementById("name"+id).value;
+    let bid = parseInt(document.getElementById("bid"+id).value);
+
+    if (!name || !bid) {
+        alert("Completa nombre y oferta");
+        return;
+    }
+
+    if (bid > parseInt(price.innerText)) {
+        price.innerText = bid;
+        winner.innerText = name;
+    } else {
+        alert("La oferta debe ser mayor a la actual");
+    }
+}
+</script>
+
+</body>
+</html>
+
