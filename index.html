@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>OSM DRAFT 2026 - Subasta</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -11,14 +15,12 @@ body {
     text-align: center;
 }
 
-h1 {
-    color: gold;
-}
+h1 { color: gold; }
 
 .container {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 25px;
     flex-wrap: wrap;
 }
 
@@ -30,8 +32,8 @@ h1 {
 }
 
 button {
-    margin-top: 10px;
-    padding: 8px 15px;
+    margin-top: 8px;
+    padding: 8px;
     background: gold;
     border: none;
     border-radius: 8px;
@@ -39,70 +41,62 @@ button {
     font-weight: bold;
 }
 
+.admin-btn {
+    background: red;
+    color: white;
+}
+
 input {
     padding: 5px;
-    width: 80%;
+    width: 90%;
     margin-top: 5px;
 }
 
+.closed {
+    background: #374151;
+    opacity: 0.7;
+}
 </style>
 </head>
 <body>
 
-<h1>🏆 OSM DRAFT 2026 - SUBASTA</h1>
+<h1>🏆 OSM DRAFT 2026 - SUBASTA EN VIVO</h1>
 
-<div class="container">
+<div class="container" id="managers"></div>
 
-<div class="card">
-<h2>Manager 1</h2>
-<p>Oferta actual: <span id="price1">0</span>M</p>
-<p>Ganador: <span id="winner1">---</span></p>
-<input type="text" id="name1" placeholder="Tu nombre">
-<input type="number" id="bid1" placeholder="Oferta en millones">
-<button onclick="bid(1)">Pujar</button>
-</div>
+<script type="module">
 
-<div class="card">
-<h2>Manager 2</h2>
-<p>Oferta actual: <span id="price2">0</span>M</p>
-<p>Ganador: <span id="winner2">---</span></p>
-<input type="text" id="name2" placeholder="Tu nombre">
-<input type="number" id="bid2" placeholder="Oferta en millones">
-<button onclick="bid(2)">Pujar</button>
-</div>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-<div class="card">
-<h2>Manager 3</h2>
-<p>Oferta actual: <span id="price3">0</span>M</p>
-<p>Ganador: <span id="winner3">---</span></p>
-<input type="text" id="name3" placeholder="Tu nombre">
-<input type="number" id="bid3" placeholder="Oferta en millones">
-<button onclick="bid(3)">Pujar</button>
-</div>
+const firebaseConfig = {
+  apiKey: "AIzaSyD0G3PfO8ebhJbDBDeB1k1-drKcpU3iksc",
+  authDomain: "osm-draft-2026.firebaseapp.com",
+  databaseURL: "https://osm-draft-2026-default-rtdb.firebaseio.com",
+  projectId: "osm-draft-2026",
+  storageBucket: "osm-draft-2026.firebasestorage.app",
+  messagingSenderId: "212624551216",
+  appId: "1:212624551216:web:d18a37b8225281ec756cf5"
+};
 
-</div>
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-<script>
-function bid(id) {
-    let price = document.getElementById("price"+id);
-    let winner = document.getElementById("winner"+id);
-    let name = document.getElementById("name"+id).value;
-    let bid = parseInt(document.getElementById("bid"+id).value);
+const managersList = ["Manager 1", "Manager 2", "Manager 3", "Manager 4", "Manager 5"];
 
-    if (!name || !bid) {
-        alert("Completa nombre y oferta");
-        return;
-    }
+const container = document.getElementById("managers");
 
-    if (bid > parseInt(price.innerText)) {
-        price.innerText = bid;
-        winner.innerText = name;
-    } else {
-        alert("La oferta debe ser mayor a la actual");
-    }
-}
-</script>
+const isAdmin = window.location.search.includes("admin=2026");
 
-</body>
-</html>
+function createCard(name) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = name;
 
+    card.innerHTML = `
+        <h2>${name}</h2>
+        <p>Oferta actual: <span class="price">0</span>M</p>
+        <p>Ganador: <span class="winner">---</span></p>
+        <p class="status"></p>
+        <input type="text" placeholder="Tu nombre" class="username">
+        <input type="number" placeholder="Oferta en millones" class="bid">
